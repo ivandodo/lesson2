@@ -26,20 +26,22 @@ def findARestaurant(mealType, location):
 
     try:
         venue = result['response']['venues'][0]
+        restaurant_name = venue['name']
+        restaurant_address = venue['location']['formattedAddress']
     except IndexError:
         return None
 
-    if venue:
-        venue_id = venue['id']
-        url = ('https://api.foursquare.com/v2/venues/%s/photos?client_id=%s&v=20150603&client_secret=%s' % (
-        (venue_id, CLIENT_ID, CLIENT_SECRET)))
-        result = (requests.get(url)).json()
+    venue_id = venue['id']
+    url = ('https://api.foursquare.com/v2/venues/%s/photos?client_id=%s&v=20150603&client_secret=%s' % (
+    (venue_id, CLIENT_ID, CLIENT_SECRET)))
+    result = (requests.get(url)).json()
 
+    if result['response']['photos']['items']:
         image_ref = result['response']['photos']['items']
         img = next((s for s in image_ref if s), None)
-        return (img and img['prefix']+"300x300"+img['suffix']) or None
+        img_url = (img and img['prefix']+"300x300"+img['suffix']) or None
     else:
-        return 'No data for %s in %s'%(mealType, location)
+        img_url = 'http://pixabay.com/get/8926af5eb597ca51ca4c/1433440765/cheeseburger-34314_1280.png?direct'
 
-
-    return result['response']['venues'][0]
+    restaurantInfo = {'name': restaurant_name, 'address': restaurant_address, 'image': img_url}
+    return restaurantInfo
