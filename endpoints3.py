@@ -1,7 +1,7 @@
 from flask import Flask, request, jsonify
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from models import Base, Puppy
+from models_endpoint import Base, Puppy
 
 engine = create_engine('sqlite:///puppies.db')
 Base.metadata.bind = engine
@@ -17,22 +17,21 @@ app = Flask(__name__)
 
 
 # Make an app.route() decorator here
-@app.route("/")
+@app.route("/", methods=['GET', 'POST'])
 @app.route("/puppies/", methods=['GET', 'POST'])
 def puppiesFunction():
     if request.method == 'GET':
         # Call the method to Get all of the puppies
         return getAllPuppies()
-    elif request.method == 'POST':
+
+    if request.method == 'POST':
         # Call the method to make a new puppy
         print("Making a New puppy")
 
         name = request.args.get('name', '')
         description = request.args.get('description', '')
-        print
-        name
-        print
-        description
+        print(name)
+        print(description)
         return makeANewPuppy(name, description)
 
 
@@ -47,7 +46,8 @@ def puppiesFunctionId(id):
     elif request.method == 'PUT':
         name = request.args.get('name', '')
         description = request.args.get('description', '')
-        return updatePuppy(id, name, description)
+        #return updatePuppy(id, name, description)
+        return name
 
         # Call the method to remove a puppy
     elif request.method == 'DELETE':
@@ -65,6 +65,7 @@ def getPuppy(id):
 
 
 def makeANewPuppy(name, description):
+    print("radi")
     puppy = Puppy(name=name, description=description)
     session.add(puppy)
     session.commit()
