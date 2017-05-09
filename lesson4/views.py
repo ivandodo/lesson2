@@ -33,9 +33,8 @@ def verify_password(username, password):
 @app.route('/users', methods=['POST'])
 def new_user():
     print(request)
-    print(request.json)
-    username = request.json.get('username')
-    password = request.json.get('password')
+    username = request.args.get('username')
+    password = request.args.get('password')
     if username is None or password is None:
         print("missing arguments")
         abort(400)
