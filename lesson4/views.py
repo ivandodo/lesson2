@@ -32,12 +32,13 @@ def verify_password(username, password):
 #ADD a /users route here
 @app.route('/users', methods=['POST'])
 def new_user():
-    print(request)
-    username = request.args.get('username')
-    password = request.args.get('password')
+    username, password = None, None
+    if request.json:
+        username = request.json.get('username')
+        password = request.json.get('password')
     if username is None or password is None:
         print("missing arguments")
-        abort(400)
+        abort(400, "Missing arguments")
 
     if session.query(User).filter_by(username=username).first() is not None:
         print("existing user")
